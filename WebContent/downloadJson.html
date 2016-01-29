@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<button onclick="downloadJson()">Downlaod JSON</button>
+	
+	<script>
+	function downloadJson() 
+	{
+		var xhr = new XMLHttpRequest();
+		xhr.open('post', "ServletJson", true);
+		xhr.responseType = 'json';
+		xhr.onload = function() {
+			var status = xhr.status;
+			if (status == 200) 
+			{
+				/*
+					Ugotovitve: 
+					responseType = 'json' deluje pri Chrome in FF, pri IE pa ne. Če nastaviš responseType='json' in potem pri Chrome in FF poskušaš responseText
+					prebrati, prleti error, moraš koristiti response. Pri IE pa je potrebno potem JSON.parse in try catch.
+				*/
+				if(xhr.responseType == 'json')
+				{
+					var data = xhr.response;
+					console.log(data.x);
+				}
+				else //IE set "" because json is not supported
+				{
+					console.log("json responseTye not supported, use JSON.parse")
+					try
+					{
+						//var data = JSON.parse(xhr.responseText + "aa"); to test error handling
+						var data = JSON.parse(xhr.responseText);
+						console.log(data.x);
+					}
+					catch(e)
+					{
+						alert(e.message);
+					}
+				}
+				//console.log(xhr.responseText);
+				/*
+				if (typeof data == 'string') 
+				{
+					console.log("response: ")
+				} */
+			}
+			else
+			{
+				alert("Error: " + xhr.statusText)
+			}
+		};
+		xhr.send();
+	}
+	</script>
+</body>
+</html>

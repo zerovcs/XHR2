@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=11">
+<meta charset="UTF-8">
+
+<title>Insert title here</title>
+</head>
+<body>
+	<button onclick="downloadBlob()">Download Blob</button>
+	<span id="status"></span>
+	
+	<script>
+		function downloadBlob() 
+		{
+			var statusSpan = document.getElementById("status");
+			statusSpan.innerHTML = "Downloading...";
+			var command = "error" //error | timeout | logout
+			var xhr = new XMLHttpRequest();
+			xhr.open('post', "ServletBlob?command=" + command, true);
+			xhr.responseType = 'blob';
+			xhr.onload = function() {
+				var status = xhr.status;
+				if (status == 200) 
+				{
+					console.log("Blob received ...");
+					if (window.navigator.msSaveOrOpenBlob) 
+					{
+						console.log("Inside msSaveOrOpenBlob");
+	     
+						var filename = "";
+						var disposition = xhr.getResponseHeader('Content-Disposition');
+						if (disposition && disposition.indexOf('attachment') !== -1) 
+						{
+							var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+							var matches = filenameRegex.exec(disposition);
+							if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+						}
+						window.navigator.msSaveOrOpenBlob(xhr.response,	filename);
+					}
+					else
+					{
+						var url = URL.createObjectURL(xhr.response);
+						var myWindow = window.open(url);
+						URL.revokeObjectURL(url);
+					}
+					statusSpan.innerHTML = "Done";
+				}
+				else
+				{
+					if(xhr.response.size == 0) //some kind of exception on server that is not handled by ErrorHandler
+					{
+						statusSpan.innerHTML = "Error: " + xhr.statusText;
+					}
+					else
+					{
+						var reader = new FileReader();
+						reader.addEventListener("loadend", function() {
+   						// reader.result contains the contents of blob as string
+						if(xhr.response.type.indexOf("text/json") != -1)
+						{
+							try
+							{
+								var exceptionObj = JSON.parse(reader.result)
+								statusSpan.innerHTML = exceptionObj.exceptionMessage;
+								alert(exceptionObj.exceptionName + ": " + exceptionObj.exceptionMessage);
+							}
+							catch (e)
+							{
+								console.log("Error parsing JSON: " + e.message);
+								statusSpan.innerHTML = e.message;
+							}
+						}
+						else //če je npr. html potrebno parsati, samo html se ne vrača s serverja, razen, če je kaj default pa z errorHandling nismo "ujeli"
+						{
+							console.log(reader.result);
+				 			statusSpan.innerHTML = reader.result;
+						}
+						});
+						reader.readAsText(xhr.response);
+					}
+				}
+			};
+			xhr.send();
+		}
+	</script>
+</body>
+</html>
