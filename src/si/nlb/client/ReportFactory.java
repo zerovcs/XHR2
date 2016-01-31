@@ -45,14 +45,21 @@ public class ReportFactory
 					logger.log(Level.INFO, "Done");
 					JsBlob blob = response.getResponseBlob();
 					Window.alert("Blob type: " + blob.getType() + "   size: " + blob.getSize());
-					Navigator navigator = getNavigator();
 					String filename = "";
 					String disposition = response.getHeader("Content-Disposition");
 					if (disposition != null && disposition.indexOf("attachment") != -1) 
 					{
 						filename = disposition.substring(disposition.indexOf("filename=") + "filename=".length());
 					}
-					navigator.msSaveOrOpenBlob(blob, filename);
+					Navigator navigator = getNavigator();
+					if(navigator != null && JsObject.getPrototypeOf(navigator).hasOwnProperty("msSaveOrOpenBlob"))
+					{
+						navigator.msSaveOrOpenBlob(blob, filename);
+					}
+					else
+					{
+						Window.alert("NOT IE");
+					}
 				}
 				else
 				{
@@ -133,19 +140,19 @@ public class ReportFactory
 	interface Event { }
 	
 	@JsType(isNative = true, name="Object", namespace=JsPackage.GLOBAL)
-	public static interface ExcObject extends JsObject
+	public static class ExcObject extends JsObject
 	{
-		@JsProperty public String getExceptionName();
-		@JsProperty public String getExceptionMessage();
-		@JsProperty public String getRequestUri();
+		@JsProperty public native String getExceptionName();
+		@JsProperty public native String getExceptionMessage();
+		@JsProperty public native String getRequestUri();
 	}
 	
 	@JsProperty(namespace=JsPackage.GLOBAL, name="navigator")
 	public static native Navigator getNavigator();
 	
 	@JsType(isNative=true, namespace=JsPackage.GLOBAL)
-	public interface Navigator
+	public static class Navigator extends JsObject
 	{
-		public String msSaveOrOpenBlob(JsBlob blob, String filename);
+		public native String msSaveOrOpenBlob(JsBlob blob, String filename);
 	}
 }
