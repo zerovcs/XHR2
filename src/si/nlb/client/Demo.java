@@ -35,9 +35,40 @@ public class Demo implements EntryPoint {
 		clickMeButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event) 
 			{
-				ReportFactory.createReport("timeout");
+				ReportFactory.createReport(null);
 //				Window.alert("Hello, GWT World!");
 			}
 		});
+		
+		Button btnTimeout = new Button("Download - sleep");
+		btnTimeout.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				ReportFactory.createReport("timeout");
+			}
+		});
+		rootPanel.add(btnTimeout);
+		Button btnLogout = new Button("Download - logout");
+		btnLogout.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				ReportFactory.createReport("logout");
+			}
+		});
+		rootPanel.add(btnLogout);
+		Button btnError = new Button("Download - error");
+		btnError.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				ReportFactory.createReport("error");
+			}
+		});
+		rootPanel.add(btnError);
 	}
 }

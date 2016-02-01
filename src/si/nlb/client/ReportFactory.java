@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import jsinterop.JsBlob;
 import jsinterop.JsObject;
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
@@ -44,7 +45,7 @@ public class ReportFactory
 				{
 					logger.log(Level.INFO, "Done");
 					JsBlob blob = response.getResponseBlob();
-					Window.alert("Blob type: " + blob.getType() + "   size: " + blob.getSize());
+//					Window.alert("Blob type: " + blob.getType() + "   size: " + blob.getSize());
 					String filename = "";
 					String disposition = response.getHeader("Content-Disposition");
 					if (disposition != null && disposition.indexOf("attachment") != -1) 
@@ -58,11 +59,15 @@ public class ReportFactory
 					}
 					else
 					{
-						Window.alert("NOT IE");
+						JsObject url = createObjectURL(blob);
+						open(url);
+						revokeObjectURL(url);
 					}
 				}
 				else
 				{
+					//verjetno bi bilo najbolje, èe bi preverjal, èe je 403 -> seja je potekla in v svoji loèeni metodi parsal kot JSON.
+					//Malo lepše je potrebno error handling implementirati - za prototip je ok
 					final JsBlob blob = response.getResponseBlob();
 					if(blob.getSize() == 0) //some kind of exception on server that is not handled by ErrorHandler
 					{
@@ -155,4 +160,13 @@ public class ReportFactory
 	{
 		public native String msSaveOrOpenBlob(JsBlob blob, String filename);
 	}
+	
+	@JsMethod(namespace="URL")
+	static native JsObject createObjectURL(JsBlob blob);
+
+	@JsMethod(namespace="URL")
+	static native void revokeObjectURL(JsObject url);
+
+	@JsMethod(namespace="window")
+	static native void open(JsObject url);
 }
