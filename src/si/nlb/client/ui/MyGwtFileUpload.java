@@ -2,6 +2,7 @@ package si.nlb.client.ui;
 
 
 import jsinterop.JsBlob;
+import jsinterop.JsFile;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -9,12 +10,12 @@ import com.google.gwt.user.client.ui.FileUpload;
 public class MyGwtFileUpload extends FileUpload 
 {
 	//TODO spremeni v File
-	public final JsBlob getBlob()
+	public final JsFile getFile()
 	{
-		return getBlob(getElement());
+		return getFile(getElement());
 	}
 	
-	public final native JsBlob getBlob(Element element) /*-{
+	public final native JsFile getFile(Element element) /*-{
 		if(element.files.length == 0) return null;
 	    return element.files[0];
 	  }-*/;
@@ -28,5 +29,5 @@ public class MyGwtFileUpload extends FileUpload
 	    return element.value = '';
 	  }-*/;
 	
-	//morda dodati še getFileList, ki vraèa FileList[] JsType
+	//morda dodati �e getFileList, ki vraèa FileList[] JsType
 }

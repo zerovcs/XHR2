@@ -1,0 +1,24 @@
+
+@def PROGRESS_BACKGROUNG lightGray;
+@def PROGRESS_COLOR blue;
+
+progress {
+		width: 200px;
+		height: 20px; 
+		background-color: PROGRESS_BACKGROUNG; 
+		color: blue; 
+	}
+	progress::-webkit-progress-value {
+    	background-color: PROGRESS_COLOR;
+    }
+    
+.labelBold {
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.labelItalic {
+	font-size: 16px;
+	font-style: italic;
+	
+}

@@ -2,4 +2,5 @@
 	<inherits name="com.google.gwt.user.User"/>
 	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
 	<entry-point class="si.nlb.client.Demo"/>
+	<set-configuration-property name="CssResource.enableGss" value="true" />
 </module>

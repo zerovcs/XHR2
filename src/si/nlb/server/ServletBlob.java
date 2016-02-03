@@ -60,7 +60,7 @@ public class ServletBlob extends HttpServlet {
 				System.out.println("Going to sleep for a while");
 				Thread.sleep(5000);
 			}
-			Files.copy(Paths.get("E:/Temp/koristno/DesignJava.pdf"), response.getOutputStream());
+			Files.copy(Paths.get("D:/knjige/Java-Performance.pdf"), response.getOutputStream());
 		}
 		catch(Exception e)
 		{
