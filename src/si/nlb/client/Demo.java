@@ -19,6 +19,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -70,5 +71,7 @@ public class Demo implements EntryPoint {
 			}
 		});
 		rootPanel.add(btnError);
+		HTMLPanel hr = new HTMLPanel("<hr style='width='100%';'>");
+		rootPanel.add(hr);		
 	}
 }
