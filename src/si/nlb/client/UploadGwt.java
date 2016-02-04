@@ -1,5 +1,14 @@
 package si.nlb.client;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jsinterop.JsFile;
+import jsinterop.JsFormData;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+import jsinterop.event.ProgressEvent;
 import si.nlb.client.resources.AppResources;
 import si.nlb.client.ui.MyGwtFileUpload;
 
@@ -8,15 +17,26 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.xhr.client.XMLHttpRequestUpload.ProgressEventListener;
 
 public class UploadGwt 
 {
 	private String fixedText = "Selected file: ";
 	Label label = new Label(fixedText);
-
+	private ProgressBar progressBar;
+	private static Logger logger = Logger.getLogger("UploadGwt");
+	
 	public void init(AppResources resources)
 	{
 		RootPanel rootPanel = RootPanel.get();
@@ -28,6 +48,12 @@ public class UploadGwt
 		rootPanel.add(fileUpload);
 		Button browser = new Button("Browse...");
 		rootPanel.add(browser);
+		rootPanel.add(label);
+		HTMLPanel div = new HTMLPanel("<progress id='progressBar' max='100' value='0'></progress>");
+		rootPanel.add(div);
+		progressBar = (ProgressBar)DOM.getElementById("progressBar");		
+
+		
 		browser.addClickHandler(new ClickHandler() 
 		{
 			@Override
@@ -35,12 +61,11 @@ public class UploadGwt
 			{
 				label.setText(fixedText);
 				fileUpload.clear();
-//				progressBar.setValue(0);
+				progressBar.setValue(0);
 				fileUpload.click();
 			}
 		});
 		
-		rootPanel.add(label);
 		fileUpload.addChangeHandler(new ChangeHandler() 
 		{
 			@Override
@@ -57,48 +82,33 @@ public class UploadGwt
 			}
 		});
 		
-/*		
-		clickMeButton = new Button();
-		rootPanel.add(clickMeButton);
-		clickMeButton.setText("Upload");
-		clickMeButton.addClickHandler(new ClickHandler()
+		
+		Button uploadBtn = new Button();
+		rootPanel.add(uploadBtn);
+		uploadBtn.setText("Upload");
+		uploadBtn.addClickHandler(new ClickHandler()
 		{
 			public void onClick(ClickEvent event) 
 			{
-//				TestService.Util.getInstance().test(new AsyncCallback<String>() 
-//				{
-//					@Override
-//					public void onSuccess(String result) {
-//						Window.alert(result);
-//					}
-//					
-//					@Override
-//					public void onFailure(Throwable caught) {
-//						Window.alert(caught.getMessage());
-//					}
-//				});
-				
-//				MyRequestBuilder builder = new MyRequestBuilder(RequestBuilder.POST, "UploadServlet");
-				MyRequestBuilder builder = new MyRequestBuilder(RequestBuilder.POST, "UploadFormDataServlet");
+				RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, "UploadFormDataServlet");
 				builder.setProgressEventListener(new ProgressEventListener() 
 				{
 					@Override
 					public void handleEvent(ProgressEvent progressEvent) 
 					{
 //						GWT.debugger();
-						if (progressEvent.getLengthComputable()) 
+						if (progressEvent.isLengthComputable()) 
 						{
 							progressBar.setMax(progressEvent.getTotal());
 							progressBar.setValue(progressEvent.getLoaded());
-							GWT.log("Total: " + progressEvent.getTotal() + "   Loaded: " + progressEvent.getLoaded());
+							logger.log(Level.INFO, "Total: " + progressEvent.getTotal() + "   Loaded: " + progressEvent.getLoaded());
 						}
 					}
 				});
-//				builder.setHeader("Content-Type", "multipart/form-data; charset=utf-8");
 				try 
 				{
-					Blob blob = fileUpload.getBlob();
-					if(blob == null) 
+					JsFile file = fileUpload.getFile();
+					if(file == null) 
 					{
 						Window.alert("Select file first");
 						return;
@@ -106,7 +116,9 @@ public class UploadGwt
 					RequestCallback requestCallback = new RequestCallback()
 					{
 						@Override
-						public void onResponseReceived(Request request, Response response) {
+						public void onResponseReceived(Request request, Response response) 
+						{
+							//TODO handle response like in ReportFactory
 							Window.alert(response.getText());
 
 						}
@@ -114,22 +126,29 @@ public class UploadGwt
 						@Override
 						public void onError(Request request, Throwable exception) 
 						{
+							//TODO handle like in ReportFactory
 							Window.alert(exception.getMessage());
 						}
+
 					};
-//					builder.send(blob, requestCallback);
-					FormData formData = new FormData();
-//					formData.append("file-name", blob.getName()); //èe pri spodnjem dodamo getName, potem moramo mna serverju prebrati filename from parf - glej TestFormDataUpload
-					formData.append("file", blob, blob.getName());
-					builder.send(formData, requestCallback);
+					JsFormData formData = new JsFormData();
+//					formData.append("file-name", blob.getName()); //èe pri spodnjem dodamo getName, potem moramo na serverju prebrati filename from part - glej TestFormDataUpload
+					formData.append("file", file, file.getName());
+					builder.sendFormData(formData, requestCallback);
 					
 				}
 				catch (RequestException e) 
 				{
+					//TODO handle like in ReportFactory
 					Window.alert(e.getMessage());
 				}
 			}
 		});
-		*/	
+	}
+	
+	@JsType(isNative=true, namespace=JsPackage.GLOBAL, name="Progress")
+	public interface ProgressBar {
+		@JsProperty public void setValue(double value);
+	    @JsProperty public void setMax(double max);
 	}
 }

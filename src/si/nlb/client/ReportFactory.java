@@ -113,6 +113,9 @@ public class ReportFactory
 			@Override
 			public void onError(Request request, Throwable exception)
 			{
+				//TODO ali je potrebno tu še kaj postoriti?
+				logger.log(Level.SEVERE, "ReportFactory: Error", exception);
+				Window.alert(exception.getMessage());
 			}
 		});
 		try
@@ -121,7 +124,7 @@ public class ReportFactory
 		}
 		catch (RequestException e)
 		{
-			GWT.log("Exception occured while creating report.", e);
+			logger.log(Level.SEVERE, "Exception occured while creating report.", e);
 			Window.alert(e.getMessage());
 		}
 	}

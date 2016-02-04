@@ -1,7 +1,6 @@
 package si.nlb.client.ui;
 
 
-import jsinterop.JsBlob;
 import jsinterop.JsFile;
 
 import com.google.gwt.dom.client.Element;
@@ -9,7 +8,6 @@ import com.google.gwt.user.client.ui.FileUpload;
 
 public class MyGwtFileUpload extends FileUpload 
 {
-	//TODO spremeni v File
 	public final JsFile getFile()
 	{
 		return getFile(getElement());
@@ -29,5 +27,5 @@ public class MyGwtFileUpload extends FileUpload
 	    return element.value = '';
 	  }-*/;
 	
-	//morda dodati še getFileList, ki vraÃ¨a FileList[] JsType
+	//morda dodati še getFileList, ki vraèa FileList[] JsType
 }
