@@ -1,6 +1,6 @@
 
 @def PROGRESS_BACKGROUNG lightGray;
-@def PROGRESS_COLOR blue;
+@def PROGRESS_COLOR rgb(0, 99, 166);
 
 progress {
 		width: 200px;
@@ -11,6 +11,13 @@ progress {
 	progress::-webkit-progress-value {
     	background-color: PROGRESS_COLOR;
     }
+    
+.progresslabel {
+    font-family: "Arial";
+    position: relative;
+    font-size: small;
+    color: white;
+}
     
 .labelBold {
 	font-size: 28px;

@@ -9,6 +9,7 @@ public interface AppResources extends ClientBundle
 	{
 		public String labelBold();
 		public String labelItalic();
+		public String progresslabel();
 	}
 
 	@Source("css/style.gss")

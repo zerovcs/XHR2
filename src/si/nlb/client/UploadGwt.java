@@ -12,7 +12,11 @@ import jsinterop.event.ProgressEvent;
 import si.nlb.client.resources.AppResources;
 import si.nlb.client.ui.MyGwtFileUpload;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,10 +53,21 @@ public class UploadGwt
 		Button browser = new Button("Browse...");
 		rootPanel.add(browser);
 		rootPanel.add(label);
-		HTMLPanel div = new HTMLPanel("<progress id='progressBar' max='100' value='0'></progress>");
+		HTMLPanel div = new HTMLPanel("<progress id='progressBar' max='100' value='0'></progress><span id='progresslabel'>0%</span>");
 		rootPanel.add(div);
 		progressBar = (ProgressBar)DOM.getElementById("progressBar");		
-
+		final Element span = DOM.getElementById("progresslabel");
+		span.addClassName(resources.css().progresslabel());
+		logger.log(Level.INFO, "span: " + (-span.getOffsetWidth()/2));
+		logger.log(Level.INFO, "bar: " + (-progressBar.getOffsetWidth()/2));
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+		{
+			@Override
+			public void execute() 
+			{
+				span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);
+			}
+		});
 		
 		browser.addClickHandler(new ClickHandler() 
 		{
@@ -62,6 +77,8 @@ public class UploadGwt
 				label.setText(fixedText);
 				fileUpload.clear();
 				progressBar.setValue(0);
+				span.setInnerHTML("0%");
+				span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);
 				fileUpload.click();
 			}
 		});
@@ -102,6 +119,9 @@ public class UploadGwt
 							progressBar.setMax(progressEvent.getTotal());
 							progressBar.setValue(progressEvent.getLoaded());
 							logger.log(Level.INFO, "Total: " + progressEvent.getTotal() + "   Loaded: " + progressEvent.getLoaded());
+							span.setInnerHTML(progressEvent.getLoaded()/progressEvent.getTotal() * 100 + "%");
+							span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);
+							//TODO check when upload finished to set "working" until response is returned
 						}
 					}
 				});
@@ -119,6 +139,7 @@ public class UploadGwt
 						public void onResponseReceived(Request request, Response response) 
 						{
 							//TODO handle response like in ReportFactory
+							//TODO set 
 							Window.alert(response.getText());
 
 						}
@@ -150,5 +171,6 @@ public class UploadGwt
 	public interface ProgressBar {
 		@JsProperty public void setValue(double value);
 	    @JsProperty public void setMax(double max);
+	    @JsProperty public double getOffsetWidth();
 	}
 }

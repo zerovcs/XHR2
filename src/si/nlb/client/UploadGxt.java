@@ -37,6 +37,7 @@ public class UploadGxt
 		title.addStyleName(resources.css().labelItalic());
 		rootPanel.add(title);
 		final MyGxtFileUpload gxtFileUpload = new MyGxtFileUpload();
+		gxtFileUpload.setWidth(200);
 		rootPanel.add(gxtFileUpload);
 
 		final ProgressBar gxtProgressBar = new ProgressBar();
