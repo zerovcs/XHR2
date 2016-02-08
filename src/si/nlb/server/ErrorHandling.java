@@ -54,8 +54,7 @@ public class ErrorHandling extends HttpServlet {
 	        if (servletName == null) {
 	            servletName = "Unknown";
 	        }
-	        String requestUri = (String) request
-	                .getAttribute("javax.servlet.error.request_uri");
+	        String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
 	        if (requestUri == null) {
 	            requestUri = "Unknown";
 	        }
@@ -86,6 +85,13 @@ public class ErrorHandling extends HttpServlet {
 	 
 	 private void processErrorJSON(HttpServletRequest request, HttpServletResponse response) throws IOException 
 	 {
+		 //simulacija zaksnitve, predno se vrne napako
+//		 try {
+//			Thread.sleep(3000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		JsonException jsonException = new JsonException();
 		// Analyze the servlet exception
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
@@ -123,9 +129,9 @@ public class ErrorHandling extends HttpServlet {
 
 	 private static class JsonException
 	 {
-		 private String exceptionName;
-		 private String exceptionMessage;
-		 private String requestUri;
+		private String exceptionName;
+		private String exceptionMessage;
+		private String requestUri;
 		public String getExceptionName()
 		{
 			return exceptionName;

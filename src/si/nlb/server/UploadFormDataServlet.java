@@ -47,6 +47,8 @@ public class UploadFormDataServlet extends HttpServlet {
 	    InputStream in = filePart.getInputStream();
 	    byte[] buffer = new byte[BUFFER_SIZE];
 	    FileOutputStream out = new FileOutputStream("E:\\eclipse\\workspace\\" + fileName);
+//	    FileOutputStream out = new FileOutputStream("D:\\development\\eclipse_4.3.2\\workspace\\html5-upload\\" + fileName);
+	    
 	    try
 	    {
 			while (true) 

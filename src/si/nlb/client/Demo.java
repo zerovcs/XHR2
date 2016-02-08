@@ -46,7 +46,7 @@ public class Demo implements EntryPoint {
 		clickMeButton.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event) 
 			{
-				ReportFactory.createReport(null);
+				ReportHandler.createReport(null);
 //				Window.alert("Hello, GWT World!");
 			}
 		});
@@ -57,7 +57,7 @@ public class Demo implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				ReportFactory.createReport("timeout");
+				ReportHandler.createReport("timeout");
 			}
 		});
 		rootPanel.add(btnTimeout);
@@ -67,7 +67,7 @@ public class Demo implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				ReportFactory.createReport("logout");
+				ReportHandler.createReport("logout");
 			}
 		});
 		rootPanel.add(btnLogout);
@@ -77,7 +77,7 @@ public class Demo implements EntryPoint {
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				ReportFactory.createReport("error");
+				ReportHandler.createReport("error");
 			}
 		});
 		rootPanel.add(btnError);

@@ -9,6 +9,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.event.ProgressEvent;
+import si.nlb.client.ResponseHandler.JfwRequestCallback;
 import si.nlb.client.resources.AppResources;
 import si.nlb.client.ui.MyGwtFileUpload;
 
@@ -119,9 +120,15 @@ public class UploadGwt
 							progressBar.setMax(progressEvent.getTotal());
 							progressBar.setValue(progressEvent.getLoaded());
 							logger.log(Level.INFO, "Total: " + progressEvent.getTotal() + "   Loaded: " + progressEvent.getLoaded());
-							span.setInnerHTML(progressEvent.getLoaded()/progressEvent.getTotal() * 100 + "%");
+							if(progressEvent.getTotal() != progressEvent.getLoaded())
+							{
+								span.setInnerHTML((int)(progressEvent.getLoaded()/progressEvent.getTotal() * 100) + "%");
+							}
+							else
+							{
+								span.setInnerHTML("V obdelavi");
+							}
 							span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);
-							//TODO check when upload finished to set "working" until response is returned
 						}
 					}
 				});
@@ -133,29 +140,27 @@ public class UploadGwt
 						Window.alert("Select file first");
 						return;
 					}
-					RequestCallback requestCallback = new RequestCallback()
+					RequestCallback callback = ResponseHandler.createRequestCallback(builder, new JfwRequestCallback() 
 					{
 						@Override
-						public void onResponseReceived(Request request, Response response) 
+						public void onResponse(Request request, Response response) 
 						{
-							//TODO handle response like in ReportFactory
-							//TODO set 
 							Window.alert(response.getText());
-
+							span.setInnerHTML("Kon\u010dano");
+							span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);							
+							
 						}
-						
 						@Override
-						public void onError(Request request, Throwable exception) 
+						public void onError(Request request, Response response) 
 						{
-							//TODO handle like in ReportFactory
-							Window.alert(exception.getMessage());
+							span.setInnerHTML("Napaka");
+							span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);							
 						}
-
-					};
+					});
 					JsFormData formData = new JsFormData();
 //					formData.append("file-name", blob.getName()); //èe pri spodnjem dodamo getName, potem moramo na serverju prebrati filename from part - glej TestFormDataUpload
 					formData.append("file", file, file.getName());
-					builder.sendFormData(formData, requestCallback);
+					builder.sendFormData(formData, callback);
 					
 				}
 				catch (RequestException e) 
