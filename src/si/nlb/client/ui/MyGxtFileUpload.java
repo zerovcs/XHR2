@@ -16,4 +16,10 @@ public class MyGxtFileUpload extends FileUploadField
 		if(element.files.length == 0) return null;
 		return element.files[0];
 	}-*/;
+
+	public void setWidth(int i)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

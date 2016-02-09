@@ -59,14 +59,17 @@ public class UploadGwt
 		progressBar = (ProgressBar)DOM.getElementById("progressBar");		
 		final Element span = DOM.getElementById("progresslabel");
 		span.addClassName(resources.css().progresslabel());
-		logger.log(Level.INFO, "span: " + (-span.getOffsetWidth()/2));
-		logger.log(Level.INFO, "bar: " + (-progressBar.getOffsetWidth()/2));
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
 		{
 			@Override
 			public void execute() 
 			{
 				span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);
+				span.getStyle().setBottom(progressBar.getOffsetHeight()/2-span.getOffsetHeight()/2, Unit.PX);
+				logger.log(Level.INFO, "span width: " + (-span.getOffsetWidth()/2));
+				logger.log(Level.INFO, "bar width: " + (-progressBar.getOffsetWidth()/2));
+				logger.log(Level.INFO, "span height: " + (span.getOffsetHeight()/2));
+				logger.log(Level.INFO, "bar height: " + (progressBar.getOffsetHeight()/2));
 			}
 		});
 		
@@ -177,5 +180,6 @@ public class UploadGwt
 		@JsProperty public void setValue(double value);
 	    @JsProperty public void setMax(double max);
 	    @JsProperty public double getOffsetWidth();
+	    @JsProperty public double getOffsetHeight();
 	}
 }

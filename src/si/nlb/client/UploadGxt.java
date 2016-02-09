@@ -6,6 +6,9 @@ import java.util.logging.Logger;
 import jsinterop.JsFile;
 import jsinterop.JsFormData;
 import jsinterop.event.ProgressEvent;
+import si.nlb.client.ResponseHandler.JfwRequestCallback;
+import si.nlb.client.resources.AppResources;
+import si.nlb.client.ui.MyGxtFileUpload;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -20,11 +23,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.xhr.client.XMLHttpRequestUpload.ProgressEventListener;
 import com.sencha.gxt.widget.core.client.ProgressBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-
-import si.nlb.client.resources.AppResources;
-import si.nlb.client.ui.MyGxtFileUpload;
 
 public class UploadGxt
 {
@@ -36,9 +37,11 @@ public class UploadGxt
 		Label title = new Label("Upload using GXT file uploader");
 		title.addStyleName(resources.css().labelItalic());
 		rootPanel.add(title);
+		SimpleContainer container = new SimpleContainer();
+		container.setWidth(300);
 		final MyGxtFileUpload gxtFileUpload = new MyGxtFileUpload();
-		gxtFileUpload.setWidth(200);
-		rootPanel.add(gxtFileUpload);
+		container.add(gxtFileUpload);
+		rootPanel.add(container);
 
 		final ProgressBar gxtProgressBar = new ProgressBar();
 		rootPanel.add(gxtProgressBar);
@@ -66,8 +69,15 @@ public class UploadGxt
 //						GWT.debugger();
 						if (progressEvent.isLengthComputable()) 
 						{
-							gxtProgressBar.updateProgress(progressEvent.getLoaded()/progressEvent.getTotal(), "{0}%");
 							logger.log(Level.INFO, "Total: " + progressEvent.getTotal() + "   Loaded: " + progressEvent.getLoaded() + "   " + progressEvent.getLoaded()/progressEvent.getTotal()*100);
+							if(progressEvent.getTotal() != progressEvent.getLoaded())
+							{
+								gxtProgressBar.updateProgress(progressEvent.getLoaded()/progressEvent.getTotal(), "{0}%");
+							}
+							else
+							{
+								gxtProgressBar.updateProgress(100, "V obdelavi");
+							}
 						}
 					}
 				});
@@ -80,22 +90,21 @@ public class UploadGxt
 						Window.alert("Select file first");
 						return;
 					}
-					RequestCallback requestCallback = new RequestCallback()
+					
+					RequestCallback requestCallback = ResponseHandler.createRequestCallback(builder, new JfwRequestCallback()
 					{
 						@Override
-						public void onResponseReceived(Request request, Response response) 
+						public void onResponse(Request request, Response response)
 						{
-							//TODO handle like in ReportFactory
+							gxtProgressBar.updateProgress(101, "Kon\u010dano");
 							Window.alert(response.getText());
 						}
-						
 						@Override
-						public void onError(Request request, Throwable exception) 
+						public void onError(Request request, Response response)
 						{
-							//TODO handle like in ReportFactory
-							Window.alert(exception.getMessage());
+							gxtProgressBar.updateProgress(101, "Napaka");
 						}
-					};
+					});
 //					builder.send(blob, requestCallback);
 					JsFormData formData = new JsFormData();
 //					formData.append("file-name", blob.getName()); //èe pri spodnjem dodamo getName, potem moramo mna serverju prebrati filename from parf - glej TestFormDataUpload

@@ -89,6 +89,7 @@ public class Demo implements EntryPoint {
 		rootPanel.add(new HTMLPanel("<br>"));
 		
 		new UploadGwt().init(resources);
+		rootPanel.add(new HTMLPanel("<br>"));
 		new UploadGxt().init(resources);
 	}
 }
