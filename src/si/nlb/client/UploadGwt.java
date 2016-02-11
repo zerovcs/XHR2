@@ -5,12 +5,12 @@ import static si.nlb.client.jquery.JQueryUtil.$;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jsinterop.JsFile;
-import jsinterop.JsFormData;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.event.ProgressEvent;
+import jsinterop.js.File;
+import jsinterop.js.FormData;
 import si.nlb.client.ResponseHandler.JfwRequestCallback;
 import si.nlb.client.jquery.JQuery;
 import si.nlb.client.resources.AppResources;
@@ -148,7 +148,7 @@ public class UploadGwt
 				});
 				try 
 				{
-					JsFile file = fileUpload.getFile();
+					File file = fileUpload.getFile();
 					if(file == null) 
 					{
 						Window.alert("Select file first");
@@ -171,7 +171,7 @@ public class UploadGwt
 							span.getStyle().setLeft(-span.getOffsetWidth()/2-progressBar.getOffsetWidth()/2, Unit.PX);							
 						}
 					});
-					JsFormData formData = new JsFormData();
+					FormData formData = new FormData();
 //					formData.append("file-name", blob.getName()); //èe pri spodnjem dodamo getName, potem moramo na serverju prebrati filename from part - glej TestFormDataUpload
 					formData.append("file", file, file.getName());
 					builder.sendFormData(formData, callback);

@@ -3,12 +3,12 @@ package si.nlb.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jsinterop.JsBlob;
-import jsinterop.JsObject;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.js.Blob;
+import jsinterop.js.JsObject;
 import si.nlb.client.ResponseHandler.JfwRequestCallback;
 
 import com.google.gwt.http.client.Request;
@@ -40,7 +40,7 @@ public class ReportHandler
 			public void onResponse(Request request, Response response)
 			{
 				logger.log(Level.INFO, "Done");
-				JsBlob blob = response.getResponseBlob();
+				Blob blob = response.getResponseBlob();
 //					Window.alert("Blob type: " + blob.getType() + "   size: " + blob.getSize());
 				String filename = "";
 				String disposition = response.getHeader("Content-Disposition");
@@ -79,11 +79,11 @@ public class ReportHandler
 	@JsType(isNative=true, namespace=JsPackage.GLOBAL)
 	public static class Navigator extends JsObject
 	{
-		public native String msSaveOrOpenBlob(JsBlob blob, String filename);
+		public native String msSaveOrOpenBlob(Blob blob, String filename);
 	}
 	
 	@JsMethod(namespace="URL")
-	static native JsObject createObjectURL(JsBlob blob);
+	static native JsObject createObjectURL(Blob blob);
 
 	@JsMethod(namespace="URL")
 	static native void revokeObjectURL(JsObject url);

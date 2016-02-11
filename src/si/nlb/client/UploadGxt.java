@@ -3,9 +3,9 @@ package si.nlb.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jsinterop.JsFile;
-import jsinterop.JsFormData;
 import jsinterop.event.ProgressEvent;
+import jsinterop.js.File;
+import jsinterop.js.FormData;
 import si.nlb.client.ResponseHandler.JfwRequestCallback;
 import si.nlb.client.resources.AppResources;
 import si.nlb.client.ui.MyGxtFileUpload;
@@ -84,7 +84,7 @@ public class UploadGxt
 //				builder.setHeader("Content-Type", "multipart/form-data; charset=utf-8");
 				try 
 				{
-					JsFile file = gxtFileUpload.getFile();
+					File file = gxtFileUpload.getFile();
 					if(file == null) 
 					{
 						Window.alert("Select file first");
@@ -106,7 +106,7 @@ public class UploadGxt
 						}
 					});
 //					builder.send(blob, requestCallback);
-					JsFormData formData = new JsFormData();
+					FormData formData = new FormData();
 //					formData.append("file-name", blob.getName()); //èe pri spodnjem dodamo getName, potem moramo mna serverju prebrati filename from parf - glej TestFormDataUpload
 					formData.append("file", file, file.getName());
 					builder.sendFormData(formData, requestCallback);

@@ -3,12 +3,16 @@ package si.nlb.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jsinterop.JsBlob;
-import jsinterop.JsObject;
+import jsinterop.Utils;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.event.Event;
+import jsinterop.event.EventListener;
+import jsinterop.js.Blob;
+import jsinterop.js.FileReader;
+import jsinterop.js.JsObject;
 
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
@@ -41,7 +45,7 @@ public class ResponseHandler
 					{
 						//verjetno bi bilo najbolje, èe bi preverjal, èe je 403 -> seja je potekla in v svoji loèeni metodi parsal kot JSON.
 						//Malo lepše je potrebno error handling implementirati - za prototip je ok
-						final JsBlob blob = response.getResponseBlob();
+						final Blob blob = response.getResponseBlob();
 						final FileReader reader = new FileReader();
 						reader.setOnloadend(new EventListener()
 						{
@@ -50,7 +54,7 @@ public class ResponseHandler
 							{
 								if(blob.getType().indexOf(CONTENT_TYPE_JSON) != -1)
 								{
-									ExcObject eo = JsonUtil.parseJson(reader.getResult());
+									ExcObject eo = Utils.parseJson(reader.getResult());
 									if(eo != null)
 									{
 										logger.log(Level.SEVERE, "ResponseHandler: " + eo.getExceptionName() + ": " + eo.getExceptionMessage());
@@ -83,7 +87,7 @@ public class ResponseHandler
 					}
 					else //json
 					{
-						ExcObject eo = JsonUtil.parseJson(response.getText());
+						ExcObject eo = Utils.parseJson(response.getText());
 						if(eo != null) 
 						{
 							logger.log(Level.SEVERE, "ResponseHandler: " + eo.getExceptionName() + ": " + eo.getExceptionMessage());
@@ -119,12 +123,6 @@ public class ResponseHandler
 		return callback;
 	}
 	
-	private static void handleJson()
-	{
-		
-	}
-	
-	
 	public static abstract class JfwRequestCallback
 	{
 		public abstract void onResponse(Request request, Response response);
@@ -138,24 +136,6 @@ public class ResponseHandler
 			
 		}
 	}
-	
-	@JsType(isNative=true, namespace=JsPackage.GLOBAL)
-	public static class FileReader
-	{
-		@JsProperty public native String getResult();
-		@JsProperty public native void setOnloadend(EventListener listener);
-		//TODO še ostale event listener-je. Events bi moral specifircirati in vsi extends Event, ki bi verjetno moral iti v SDK GWT ali pa v vsaj svoj JAR, podobno kot bo Elemental 2.0
-		public native void readAsText(JsBlob blob);
-	}
-	
-	@JsFunction
-	interface EventListener
-	{
-		public void handleEvent(Event event);
-	}
-	
-	@JsType(isNative=true, namespace=JsPackage.GLOBAL)
-	interface Event { }
 	
 	@JsType(isNative = true, name="Object", namespace=JsPackage.GLOBAL)
 	public static class ExcObject extends JsObject
