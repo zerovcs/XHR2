@@ -1,18 +1,18 @@
 package si.nlb.client.jquery;
 
-import si.nlb.client.UploadGwt.Node;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.html.Node;
 
 @JsType(isNative=true, namespace=JsPackage.GLOBAL)
 public interface JQuery // extends NodeList
 {
     @JsProperty public int getLength();
     
-    @JsProperty(name="get") public Node get(int index);
-
+    public Node get(int index);
+    
     /**
      * Adds the specified class(es) to each element in the set of matched elements.
      *
