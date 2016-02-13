@@ -14,12 +14,15 @@
  *******************************************************************************/
 package si.nlb.client;
 
+import jsinterop.Utils;
+import jsinterop.html.Window;
 import si.nlb.client.resources.AppResources;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -91,5 +94,34 @@ public class Demo implements EntryPoint {
 		new UploadGwt().init(resources);
 		rootPanel.add(new HTMLPanel("<br>"));
 		new UploadGxt().init(resources);
+
+		rootPanel.add(new HTMLPanel("<hr style='width='100%';'>"));
+		Label title = new Label("Testing GWT-RPC");
+		title.addStyleName(resources.css().labelItalic());
+		rootPanel.add(title);
+		Button gwt = new Button("Invoke RPC");
+		gwt.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				GwtRpcTest.Util.getInstance().testingRPC("Someone", new AsyncCallback<String>() 
+				{
+					@Override
+					public void onSuccess(String result) 
+					{
+						Window.alert(result);
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) 
+					{
+						Window.getConsole().error("Error: " + caught.getMessage());
+					}
+				});
+			}
+		});
+		rootPanel.add(gwt);
+
 	}
 }
