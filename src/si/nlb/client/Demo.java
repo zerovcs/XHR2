@@ -15,6 +15,8 @@
 package si.nlb.client;
 
 import jsinterop.Utils;
+import jsinterop.html.Console;
+import jsinterop.html.Storage;
 import jsinterop.html.Window;
 import si.nlb.client.resources.AppResources;
 
@@ -123,5 +125,30 @@ public class Demo implements EntryPoint {
 		});
 		rootPanel.add(gwt);
 
+		
+		rootPanel.add(new HTMLPanel("<hr style='width='100%';'>"));
+		title = new Label("Testing Storage");
+		title.addStyleName(resources.css().labelItalic());
+		rootPanel.add(title);
+		Button btnStorage = new Button("Test storage");
+		btnStorage.addClickHandler(new ClickHandler()
+		{
+			@Override
+			public void onClick(ClickEvent event)
+			{
+				Console console = Window.getConsole();
+				Storage localStorage = Window.getLocalStorage();
+				console.log("Save to local storeage");
+				localStorage.setItem("key1", "value1");
+				console.log("Read from local storeage");
+				Window.alert("Value for storage key: " + localStorage.getItem("key1"));
+				console.log("Clear local storeage");
+				localStorage.clear();
+				console.log("Local storage length: " + localStorage.getLength());
+
+			}
+		});
+		rootPanel.add(btnStorage);
+		
 	}
 }
