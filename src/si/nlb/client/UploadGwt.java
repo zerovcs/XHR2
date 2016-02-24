@@ -16,7 +16,6 @@ import si.nlb.client.ui.MyGwtFileUpload;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dev.jjs.impl.JsInteropRestrictionChecker;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
@@ -125,8 +124,9 @@ public class UploadGwt
 				builder.setProgressEventListener(new ProgressEventListener() 
 				{
 					@Override
-					public void handleEvent(ProgressEvent progressEvent) 
+					public void handleEvent(Object event) 
 					{
+						ProgressEvent progressEvent = (ProgressEvent)event; 
 //						GWT.debugger();
 						if (progressEvent.isLengthComputable()) 
 						{

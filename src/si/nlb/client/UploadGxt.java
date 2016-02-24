@@ -64,8 +64,9 @@ public class UploadGxt
 				builder.setProgressEventListener(new ProgressEventListener() 
 				{
 					@Override
-					public void handleEvent(ProgressEvent progressEvent) 
+					public void handleEvent(Object event) 
 					{
+						ProgressEvent progressEvent = (ProgressEvent)event;
 //						GWT.debugger();
 						if (progressEvent.isLengthComputable()) 
 						{
