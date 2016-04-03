@@ -54,7 +54,7 @@ public class ResponseHandler
 							{
 								if(blob.getType().indexOf(CONTENT_TYPE_JSON) != -1)
 								{
-									ExcObject eo = Utils.parseJson(reader.getResult());
+									ExcObject eo = (ExcObject)Utils.parseJson(reader.getResult());
 									if(eo != null)
 									{
 										logger.log(Level.SEVERE, "ResponseHandler: " + eo.getExceptionName() + ": " + eo.getExceptionMessage());
@@ -87,7 +87,7 @@ public class ResponseHandler
 					}
 					else //json
 					{
-						ExcObject eo = Utils.parseJson(response.getText());
+						ExcObject eo = (ExcObject)Utils.parseJson(response.getText());
 						if(eo != null) 
 						{
 							logger.log(Level.SEVERE, "ResponseHandler: " + eo.getExceptionName() + ": " + eo.getExceptionMessage());
@@ -145,4 +145,12 @@ public class ResponseHandler
 		@JsProperty public native String getRequestUri();
 	}
 	
+	//03.04.2016 - v https://groups.google.com/forum/#!topic/google-web-toolkit/w89i2llKJjQ
+	//je uporabil interface brez isNative - vendar meni ne gre, moja biti isNative=true
+//	@JsType(name="Object", namespace=JsPackage.GLOBAL)
+//	public interface ExcObject {
+//		@JsProperty public String getExceptionName();
+//		@JsProperty public String getExceptionMessage();
+//		@JsProperty public String getRequestUri();
+//	}
 }
